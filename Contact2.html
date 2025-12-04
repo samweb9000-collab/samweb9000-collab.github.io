@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact | THE EDIT</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #faf9f6;
+      --card: #ffffff;
+      --text: #0b0b0b;
+      --muted: #6f6f6f;
+      --accent: #ff7a00; /* orange */
+      --accent-dark: #e66b00;
+      --radius: 12px;
+      --container: 980px;
+      --shadow: 0 8px 30px rgba(14,14,14,0.06);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family:"Open Sans", Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      margin:0;
+      padding:28px 20px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      max-width:var(--container);
+      margin:0 auto;
+      background:transparent;
+      padding:10px;
+    }
+
+    header.topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);
+    }
+    .brand img{height:46px; width:auto; border-radius:6px; object-fit:contain}
+    .brand h2{font-size:1.05rem;margin:0;font-weight:700}
+
+    /* Buttons */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:10px 18px;
+      border-radius:10px;
+      font-weight:700;
+      text-decoration:none;
+      cursor:pointer;
+      border:0;
+      transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+      user-select:none;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn:focus{outline:3px solid rgba(255,122,0,0.16); outline-offset:3px}
+
+    .btn-primary{
+      background:linear-gradient(180deg,var(--accent) 0%, var(--accent-dark) 100%);
+      color:#080808;
+      box-shadow: 0 8px 20px rgba(255,122,0,0.12);
+    }
+    .btn-primary:hover{
+      transform:translateY(-3px);
+      box-shadow: 0 14px 40px rgba(230,107,0,0.13);
+    }
+
+    .btn-ghost{
+      background:transparent;
+      color:var(--text);
+      border:1px solid rgba(0,0,0,0.08);
+    }
+
+    /* Page heading */
+    h1{
+      font-size:2.125rem;
+      margin:8px 0 10px;
+      letter-spacing:0.2px;
+    }
+    .lead{
+      color:var(--muted);
+      max-width:60ch;
+      margin-bottom:18px;
+    }
+
+    /* Layout: two-column */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:28px;
+      align-items:start;
+    }
+
+    /* Form */
+    form.card{
+      background:var(--card);
+      padding:22px;
+      border-radius:14px;
+      box-shadow:var(--shadow);
+    }
+    label{display:block;margin-bottom:8px;font-weight:600;color:var(--text)}
+    input, select, textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid #eee;
+      margin-bottom:14px;
+      font-size:1rem;
+      color:var(--text);
+      background:#fff;
+      transition: box-shadow .12s ease, border-color .12s ease;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(255,122,0,0.35);
+      box-shadow: 0 6px 22px rgba(255,122,0,0.06);
+      outline: none;
+    }
+    textarea{min-height:140px; resize:vertical}
+
+    /* aside: contact details + FAQ */
+    aside.card{
+      background:var(--card);
+      padding:18px;
+      border-radius:12px;
+      box-shadow:var(--shadow);
+    }
+    .meta{font-size:0.95rem;color:var(--muted);margin-bottom:12px}
+    .meta strong{color:var(--text)}
+
+    /* FAQ accordion */
+    .faq h3{margin-top:0}
+    .faq-item{
+      border-top:1px solid #f2f2f2;
+      padding:14px 0;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .faq-item button.q{
+      background:transparent;border:0;font-weight:700;color:var(--text);
+      cursor:pointer;font-size:1rem;
+      display:flex;align-items:center;gap:10px;
+      width:100%;text-align:left;padding:0;
+    }
+    .faq-item .answer{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:0.95rem;
+    }
+    .chev{
+      min-width:26px; height:26px; display:inline-grid;place-items:center;
+      border-radius:6px; background:#fff; border:1px solid rgba(0,0,0,0.04);
+    }
+
+    /* success msg */
+    .success{
+      border-radius:10px;padding:12px 14px;background:linear-gradient(90deg, rgba(255,250,240,1), rgba(255,255,255,1));
+      border:1px solid rgba(230,122,0,0.12);
+      color:var(--text);
+      margin-top:12px;
+      display:none;
+    }
+
+    footer { margin-top:28px; color:var(--muted); font-size:0.95rem; text-align:center }
+
+    @media (max-width:980px){
+      .grid{grid-template-columns:1fr; padding-bottom:20px}
+      aside.card{order:2}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="topbar">
+      <a class="brand" href="THE EDIT.html" aria-label="Back to home">
+        <img src="EDIT IMAGES/TE.png" alt="The Edit logo" onerror="this.src='https://via.placeholder.com/64x40?text=Logo'">
+        <h2>THE EDIT</h2>
+      </a>
+
+      <nav aria-label="Top actions">
+        <a class="btn btn-ghost" href="THE EDIT.html">Back to Home</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Get in touch</h1>
+      <p class="lead">Interested in partnering for a drop, questions about the brand, or custom enquiries? Fill the form and we'll reply (we aim to respond within 12 hours). If you'd rather email directly, click the contact email in the right panel.</p>
+
+      <div class="grid" role="region" aria-label="Contact and FAQ region">
+        <!-- FORM -->
+        <form class="card" id="contact-form" data-contact-email="hello@theedit.example" novalidate>
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" placeholder="Jane Doe" required>
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@email.com" required>
+
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" required>
+            <option value="">— Choose a topic —</option>
+            <option value="partnership">Partnership / Collaboration</option>
+            <option value="stockists">Stockists / Wholesale</option>
+            <option value="product-enquiry">Product enquiry</option>
+            <option value="other">Other</option>
+          </select>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Tell us what you're thinking — collaboration ideas, timelines, budget, etc." required></textarea>
+
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <button type="submit" class="btn btn-primary">Send message</button>
+            <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
+            <div style="margin-left:auto;font-size:0.95rem;color:var(--muted)">Response target: <strong style="color:var(--text)">within 12 hours</strong></div>
+          </div>
+
+          <div id="form-success" class="success" role="status" aria-live="polite"></div>
+        </form>
+
+        <!-- ASIDE: contact info + FAQ -->
+        <aside class="card" aria-label="Contact information and FAQ">
+          <div class="meta">
+            <div><strong>For partnerships & drops:</strong> we're open. Tell us what you have in mind — collabs, capsules, or wholesale.</div>
+            <div style="margin-top:8px"><strong>Email:</strong> <a id="contact-email-link" href="mailto:hello@theedit.example">hello@theedit.example</a></div>
+            <div style="margin-top:8px"><strong>Location:</strong> Remote / Worldwide shipping available</div>
+          </div>
+
+          <section class="faq" aria-labelledby="faq-heading">
+            <h3 id="faq-heading">FAQ — quick answers</h3>
+
+            <div class="faq-item">
+              <div style="flex:1">
+                <button class="q" aria-expanded="false" aria-controls="a1" data-target="a1">
+                  <span>How long until I get a reply?</span>
+                </button>
+                <div id="a1" class="answer" hidden>We aim to reply within 12 hours on business days. For urgent partnership requests, include "URGENT" in the subject and a phone number.</div>
+              </div>
+              <div class="chev">+</div>
+            </div>
+
+            <div class="faq-item">
+              <div style="flex:1">
+                <button class="q" aria-expanded="false" aria-controls="a2" data-target="a2">
+                  <span>Do you accept wholesale/stockist requests?</span>
+                </button>
+                <div id="a2" class="answer" hidden>Yes — we work with selected stores. Send a brief with your location, quantities, and retail plan and we'll follow up with our wholesale terms.</div>
+              </div>
+              <div class="chev">+</div>
+            </div>
+
+            <div class="faq-item">
+              <div style="flex:1">
+                <button class="q" aria-expanded="false" aria-controls="a3" data-target="a3">
+                  <span>Can you do custom / private-label runs?</span>
+                </button>
+                <div id="a3" class="answer" hidden>Yes — limited runs available. Provide desired quantities, timelines and artwork mockups; we'll give a rough quote and lead time.</div>
+              </div>
+              <div class="chev">+</div>
+            </div>
+
+            <div class="faq-item">
+              <div style="flex:1">
+                <button class="q" aria-expanded="false" aria-controls="a4" data-target="a4">
+                  <span>How do I become a collaborator for drops?</span>
+                </button>
+                <div id="a4" class="answer" hidden>Send campaign idea, visuals, and a short proposal. If it's a fit we'll invite you to an initial call to discuss timelines and split/terms.</div>
+              </div>
+              <div class="chev">+</div>
+            </div>
+
+          </section>
+
+        </aside>
+      </div>
+
+      <footer>
+        <small>© THE EDIT — Built for creative drops, collabs and enquiries. Need something else? Hit the form — we read everything.</small>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Script: handle form UX, clear, FAQ toggle
+    (function(){
+      const form = document.getElementById('contact-form');
+      const success = document.getElementById('form-success');
+      const clearBtn = document.getElementById('clear-btn');
+      const emailLink = document.getElementById('contact-email-link');
+      // place where to send contact mail (change attribute value in HTML)
+      const contactEmail = form.dataset.contactEmail || 'hello@theedit.example';
+      emailLink.href = 'mailto:' + contactEmail;
+      emailLink.textContent = contactEmail;
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // basic client-side validation (HTML already requires fields)
+        const data = new FormData(form);
+        const name = data.get('name').trim();
+        const email = data.get('email').trim();
+        const subject = data.get('subject') || 'Enquiry';
+        const message = data.get('message').trim();
+
+        if (!name || !email || !message || subject === '') {
+          showMessage('Please fill all required fields.', false);
+          return;
+        }
+
+        // Simulate sending (replace with a real fetch to your backend)
+        // We'll also show a direct mailto fallback link in case user wants to email now.
+        showMessage(
+          `Thanks ${escapeHtml(name)} — your message about "${escapeHtml(subject)}" was received. We'll reply to ${escapeHtml(email)} within 12 hours. <br><br>
+           Prefer to email directly? <a href="mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}">Send email now</a>`,
+          true
+        );
+
+        form.reset();
+      });
+
+      clearBtn.addEventListener('click', () => form.reset());
+
+      function showMessage(msg, ok){
+        success.innerHTML = msg;
+        success.style.display = 'block';
+        success.style.borderColor = ok ? 'rgba(0,180,80,0.12)' : 'rgba(220,20,20,0.08)';
+        // hide after 12s
+        setTimeout(()=> {
+          success.style.display = 'none';
+        }, 12000);
+      }
+
+      // small HTML escape helper
+      function escapeHtml(s){
+        return String(s).replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
+      }
+
+      // FAQ accordion: toggle answer & symbol
+      document.querySelectorAll('.faq-item').forEach(item => {
+        const btn = item.querySelector('button.q');
+        const targetId = btn.dataset.target;
+        const answer = document.getElementById(targetId);
+        const chev = item.querySelector('.chev');
+
+        btn.addEventListener('click', () => {
+          const open = btn.getAttribute('aria-expanded') === 'true';
+          // close all so only one open at a time (optional). If you want multiple open, remove closing below.
+          document.querySelectorAll('.faq-item button.q').forEach(b=>{
+            b.setAttribute('aria-expanded','false');
+            document.getElementById(b.dataset.target).hidden = true;
+            b.closest('.faq-item').querySelector('.chev').textContent = '+';
+          });
+
+          if (!open){
+            btn.setAttribute('aria-expanded','true');
+            answer.hidden = false;
+            chev.textContent = '−';
+          } else {
+            btn.setAttribute('aria-expanded','false');
+            answer.hidden = true;
+            chev.textContent = '+';
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>

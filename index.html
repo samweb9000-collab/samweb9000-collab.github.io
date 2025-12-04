@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Edit </title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f5f5f5;
+      --card:#ffffff;
+      --accent: orangered;
+      --text:#0b0b0b;
+      --muted:#7b7b7b;
+      --radius:12px;
+      --container:1100px;
+    }
+
+    /* Reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Helvetica, Arial;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    /* Header */
+    .header{
+      width:100%;
+      max-width:var(--container);
+      margin:18px auto;
+      padding:12px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .logo{width:80px;height:auto;object-fit:contain}
+    
+    .navbar a{
+      margin-left:18px;
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:600;
+    }
+    .navbar a:hover{color:var(--text)}
+    .nav-right{display:flex;align-items:center;gap:12px}
+    
+    .cart-btn{
+      background:transparent;border:1px solid rgba(0,0,0,0.06);
+      padding:6px 10px;border-radius:10px;cursor:pointer;position:relative;
+    }
+    
+    .cart-count{
+      position:absolute;top:-6px;right:-6px;background:var(--accent);
+      color:white;border-radius:50%;width:20px;height:20px;font-size:12px;
+      display:flex;align-items:center;justify-content:center;font-weight:700;
+    }
+
+    /* HERO */
+    .hero{
+      max-width:var(--container);
+      margin:0 auto;
+      display:flex;
+      gap:40px;
+      align-items:center;
+      padding:36px 20px;
+      min-height:62vh;
+    }
+    
+    .hero-left{flex:1;min-width:260px}
+    
+    .animated-text{
+      font-family:"DM Serif Display", serif;
+      font-size:4rem;line-height:0.95;
+      background:linear-gradient(90deg,purple,orange,red,blue,green,purple);
+      background-size:400% 400%;
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      animation:gradientShift 6s ease infinite;
+    }
+
+    @keyframes gradientShift{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    .hero p{margin-top:14px;font-size:1.05rem;color:var(--muted);max-width:50ch}
+
+    /* Page container / sections */
+    .page-section{
+      max-width:var(--container);
+      margin:28px auto;
+      padding:14px 20px 48px;
+      background:transparent;
+    }
+    .section-title{
+      font-size:1.6rem;margin-bottom:16px;font-weight:700;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+
+    /* Product grid - horizontal scroll on small screens, grid on larger */
+    .product-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:20px;
+      align-items:start;
+    }
+
+    .product-card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:12px;
+      box-shadow:0 6px 18px rgba(10,10,10,0.06);
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+      display:flex;flex-direction:column;
+      min-height:320px;
+      position:relative;
+    }
+
+    .product-card:hover{transform:translateY(-6px);box-shadow:0 18px 30px rgba(10,10,10,0.08)}
+    .product-thumb{
+      width:100%;height:220px;border-radius:10px;object-fit:cover;background:#eee;
+    }
+    .product-info{margin-top:10px;flex:1;display:flex;flex-direction:column;gap:6px}
+    .product-title{font-weight:700}
+    .product-price{font-weight:700;color:var(--text)}
+    .product-short{font-size:0.9rem;color:var(--muted);margin-top:6px;flex:1}
+
+    /* small description toggle (kept for accessibility) */
+    .short-desc{display:none;padding:8px;margin-top:8px;background:#fafafa;border-radius:8px;font-size:0.9rem;color:var(--muted)}
+
+    /* Modal (product detail) */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:1200}
+    .modal{background:var(--card);width:100%;max-width:900px;border-radius:12px;overflow:hidden;display:flex;gap:0}
+    .modal-left{flex:1;background:#f7f7f7;display:flex;align-items:center;justify-content:center;padding:20px}
+    .modal-left img{max-width:100%;max-height:70vh;border-radius:8px;object-fit:contain}
+    .modal-right{flex:1;padding:22px;display:flex;flex-direction:column;gap:12px}
+    .modal-title{font-size:1.3rem;font-weight:800}
+    .modal-price{font-size:1.15rem;font-weight:700;color:var(--accent)}
+    .modal-desc{color:var(--muted);font-size:0.98rem}
+    .modal-actions{margin-top:10px;display:flex;gap:10px;align-items:center}
+    .qty{width:64px;padding:8px;border-radius:8px;border:1px solid #ddd;text-align:center}
+    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-outline{background:transparent;border:1px solid #ddd}
+
+    /* Cart drawer */
+    .cart-drawer{
+      position:fixed;right:18px;top:70px;width:340px;background:var(--card);
+      padding:14px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.12);
+      display:none;flex-direction:column;gap:10px;z-index:1300;
+    }
+    .cart-item{display:flex;gap:10px;align-items:center}
+    .cart-item img{width:56px;height:56px;object-fit:cover;border-radius:8px}
+    .cart-item .meta{flex:1}
+    .empty{color:var(--muted);text-align:center;padding:20px 10px;font-size:0.95rem}
+
+    /* responsive */
+    @media (max-width:900px){
+      .hero{flex-direction:column;align-items:flex-start;min-height:auto}
+      .animated-text{font-size:2.6rem}
+      .product-card{min-height:300px}
+      .modal{flex-direction:column}
+      .modal-left img{max-height:45vh}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div style="display:flex;align-items:center;gap:12px">
+      <a href="#home"><img class="logo" src="EDIT IMAGES/TE.png" alt="The Edit logo" onerror="this.src='https://via.placeholder.com/80x40?text=Logo'"></a>
+    </div>
+
+    <nav class="navbar" aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#fits"> Inspired </a>
+      <a href="#christmas">Winter Ops Pack</a>
+      <a href="#newyear">New Fire</a>
+      <a href="contact2.html">Contact</a>
+    </nav>
+
+    <div class="nav-right">
+      <button class="cart-btn" id="open-cart" aria-label="Open cart">
+        Cart <span class="cart-count" id="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section id="home" class="hero" aria-labelledby="hero-heading">
+      <div class="hero-left">
+        <h1 id="hero-heading" class="animated-text">Hi, Hola, Konichiwa</h1>
+        <p>You're on my page now — welcome. Get ready to fall in love with my brand. And don’t blame me when your accountant starts stressing over all the things you’ll “accidentally” buy.</p>
+
+        <h3 style="margin-top:18px">ABOUT THIS BRAND</h3>
+        <p style="color:var(--muted);max-width:56ch">
+          THE EDIT is a modern clothing label that celebrates effortless confidence and clean, wearable design. It sits where streetwear meets contemporary tailoring: not shouting, but noticed.
+        </p>
+      </div>
+
+      <div style="flex:0 0 320px;display:flex;align-items:center;justify-content:center">
+        <img src="EDIT IMAGES/HERO_PLACEHOLDER.png" alt="Hero mock" style="width:100%;max-width:300px;border-radius:12px;object-fit:cover" onerror="this.src='https://via.placeholder.com/300x350?text=Hero'">
+      </div>
+    </section>
+
+    <!-- INSPIRED FITS -->
+    <section id="fits" class="page-section" aria-labelledby="fits-title">
+      <div class="section-title">
+        <strong id="fits-title">Inspired Fits</strong>
+      </div>
+
+      <div class="product-grid" id="fits-grid">
+        <!-- Product cards (data attributes used by JS) -->
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Born Winner Tee" data-price="45" data-desc="A clean and minimal tee inspired by urban street energy." data-img="EDIT IMAGES/BORN WINNER 10.png">
+          <img class="product-thumb" src="EDIT IMAGES/BORN WINNER 10.png" alt="Born Winner Tee" onerror="this.src='https://via.placeholder.com/400x320?text=Product'">
+          <div class="product-info">
+            <div class="product-title">Born Winner Tee</div>
+            <div class="product-price">$45</div>
+            <div class="product-short">Wear your confidence: 
+              the Born Winner vintage-print tee with crown detail</div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Tweet Shirt" data-price="50" data-desc="Graphic tee inspired by vintage anime posters." data-img="EDIT IMAGES/TWEET SHIRT 2.png">
+          <img class="product-thumb" src="EDIT IMAGES/TWEET SHIRT 2.png" alt="Tweet Shirt" onerror="this.src='https://via.placeholder.com/400x320?text=Product'">
+          <div class="product-info">
+            <div class="product-title">Tweet Shirt</div>
+            <div class="product-price">$50</div>
+            <div class="product-short">
+              Cartoon-bird graphic tee: “I Just Be Tweetin’” — fun, casual, and made for the feed.
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+
+        <div class="product-card" role="button" tabindex="0"
+             data-title="What's True Oversized" data-price="40" data-desc="Oversized shirt influenced by 90s grunge and skate culture." data-img="EDIT IMAGES/WHAT'S TRUE 10.png">
+          <img class="product-thumb" src="EDIT IMAGES/WHAT'S TRUE 10.png" alt="What's True Oversized" onerror="this.src='https://via.placeholder.com/400x320?text=Product'">
+          <div class="product-info">
+            <div class="product-title">What's True Oversized</div>
+            <div class="product-price">$40</div>
+            <div class="product-short">
+            Grunge-style white tee with bold text that reads, “Dude, I don’t even know what’s true anymore.
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHRISTMAS DESIGNS -->
+    <section id="christmas" class="page-section" aria-labelledby="christmas-title">
+      <div class="section-title">
+        <strong id="christmas-title">Christmas Designs</strong>
+      </div>
+
+      <div class="product-grid" id="christmas-grid">
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Silent Night Hoodie" data-price="65" data-desc="Cozy hoodie with subtle festive embroidery." data-img="EDIT IMAGES/CHRISTMAS1.png">
+          <img class="product-thumb" src="EDIT IMAGES/CHILLMAS 100.png" alt="Silent Night Hoodie" onerror="this.src='https://via.placeholder.com/400x320?text=Christmas+1'">
+          <div class="product-info">
+            <div class="product-title">
+                 CHILLMAS
+            </div>
+            <div class="product-price">$55</div>
+            <div class="product-short">
+            Chillmas Tee — a sunglasses-clad snowman with a retro boombox, serving cool, playful holiday streetwear.            
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Merry Minimal Tee" data-price="35" data-desc="Minimal tee with small festive motif." data-img="EDIT IMAGES/CHRISTMAS2.png">
+          <img class="product-thumb" src="EDIT IMAGES/DRIPMAS.png" 
+          alt="Merry Minimal Tee" 
+          onerror="this.src='https://via.placeholder.com/400x320?text=Christmas+2'">
+          <div class="product-info">
+            <div class="product-title"> MERRY DRIPMAS </div>
+            <div class="product-price">$35</div>
+            <div class="product-short">
+              Merry Dripmas Tee — shiny chrome lettering with a Santa hat and icy drips for bold holiday street style.
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Nordic Knit Crew" data-price="78" data-desc="Chunky knit sweater with a modern Nordic pattern." data-img="EDIT IMAGES/CHRISTMAS3.png">
+          <img class="product-thumb" 
+          src="EDIT IMAGES/SLEIGH ALL DAY.png" 
+          alt="Nordic Knit Crew" onerror="this.src='https://via.placeholder.com/400x320?text=Christmas+3'">
+          <div class="product-info">
+            <div class="product-title"> FUN-THER CHRISTMAS </div>
+            <div class="product-price">$78</div>
+            <div class="product-short">
+              Sleigh All Day Shirt — edgy, street-style Santa graphic for a fun Christmas look.
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW YEAR FIRE -->
+    <section id="newyear" class="page-section" aria-labelledby="newyear-title">
+      <div class="section-title">
+        <strong id="newyear-title">New Year Fire</strong>
+      </div>
+
+      <div class="product-grid" id="newyear-grid">
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Midnight Bomber" data-price="95" data-desc="Sleek bomber jacket with metallic accents for New Year shine." data-img="EDIT IMAGES/NY1.png">
+          <img class="product-thumb" 
+          src="EDIT IMAGES/SMALL STEPS.png" 
+          alt="Midnight Bomber" onerror="this.src='https://via.placeholder.com/400x320?text=NY+1'">
+          <div class="product-info">
+            <div class="product-title"> SMALL STEPS, BIG YEAR </div>
+            <div class="product-price">$95</div>
+            <div class="product-short"> 
+              Bold orange tee with playful “Small Steps — Big Year” typography and staircase graphic — a stylish, motivational reminder to celebrate steady progress.
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Spark Tee" data-price="42" data-desc="Shimmer print tee that catches light and attention." data-img="EDIT IMAGES/NY2.png">
+          <img class="product-thumb" src="EDIT IMAGES/THIS TIME.png"
+           alt="Spark Tee" onerror="this.src='https://via.placeholder.com/400x320?text=NY+2'">
+          <div class="product-info">
+            <div class="product-title"> TIMELY INTENTION  </div>
+            <div class="product-price">$42</div>
+            <div class="product-short">
+This Time with Intention motivational Tshirt 
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+
+        <div class="product-card" role="button" tabindex="0"
+             data-title="Countdown Coat" data-price="120" data-desc="A statement coat designed to turn heads at midnight." data-img="EDIT IMAGES/NY3.png">
+          <img class="product-thumb" src="EDIT IMAGES/YEAR CONSISTENT.png" 
+          alt="Countdown Coat" onerror="this.src='https://via.placeholder.com/400x320?text=NY+3'">
+          <div class="product-info">
+            <div class="product-title"> YEAR CONSISTENT</div>
+            <div class="product-price">$64</div>
+            <div class="product-short"> 
+Charcoal tee with bold, stacked “The Year I Learn to Stay Consistent” motivational print
+            </div>
+            <div class="short-desc">Click to open details & add to cart.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document" aria-labelledby="modal-title">
+      <div class="modal-left">
+        <img id="modal-img" src="" alt="Product image">
+      </div>
+      <div class="modal-right">
+        <div class="modal-title" id="modal-title">Title</div>
+        <div class="modal-price" id="modal-price">$0</div>
+        <div class="modal-desc" id="modal-desc">Description</div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="modal-actions">
+            <label for="qty" style="font-weight:700">Qty</label>
+            <input id="qty" class="qty" type="number" min="1" max="8" value="1" />
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" id="close-modal">Close</button>
+            <button class="btn btn-primary" id="add-to-cart">Add to cart</button>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;color:var(--muted);font-size:0.9rem">Added items will show in the small cart at the top-right.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART DRAWER -->
+  <div class="cart-drawer" id="cart-drawer" aria-hidden="true">
+    <strong>Your cart</strong>
+    <div id="cart-items" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+    <div id="cart-empty" class="empty">Cart is empty</div>
+    <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+      <div><strong>Total: </strong><span id="cart-total">$0</span></div>
+      <button class="btn btn-primary" id="checkout-btn">Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    // -- Utility + state
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalPrice = document.getElementById('modal-price');
+    const modalDesc = document.getElementById('modal-desc');
+    const qtyInput = document.getElementById('qty');
+
+    const cartBtn = document.getElementById('open-cart');
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartCountEl = document.getElementById('cart-count');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartEmpty = document.getElementById('cart-empty');
+    const cartTotalEl = document.getElementById('cart-total');
+
+    let currentProduct = null;
+    const cart = [];
+
+    // Delegated click handler for product cards
+    document.addEventListener('click', (e) => {
+      const card = e.target.closest('.product-card');
+      if (card) {
+        openProductModalFromCard(card);
+      }
+    });
+
+    // keyboard accessibility: open on Enter
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('product-card')) {
+        openProductModalFromCard(document.activeElement);
+      }
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function openProductModalFromCard(card) {
+      const title = card.dataset.title || 'Product';
+      const price = card.dataset.price || '0';
+      const desc = card.dataset.desc || '';
+      const img = card.dataset.img || card.querySelector('img')?.src || '';
+
+      currentProduct = { title, price: Number(price), desc, img };
+      showModal(currentProduct);
+    }
+
+    function showModal(product){
+      modalImg.src = product.img;
+      modalImg.alt = product.title;
+      modalTitle.textContent = product.title;
+      modalPrice.textContent = "$" + product.price;
+      modalDesc.textContent = product.desc;
+      qtyInput.value = 1;
+
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    // Close modal
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    function closeModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      currentProduct = null;
+    }
+
+    // Add to cart
+    document.getElementById('add-to-cart').addEventListener('click', () => {
+      if (!currentProduct) return;
+      const qty = Math.max(1, parseInt(qtyInput.value) || 1);
+      addToCart({ ...currentProduct, qty });
+      closeModal();
+      // show drawer briefly
+      showCartDrawer();
+    });
+
+    function addToCart(item){
+      // merge if same title
+      const existing = cart.find(i => i.title === item.title);
+      if (existing){
+        existing.qty += item.qty;
+      } else {
+        cart.push({ ...item });
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI(){
+      // update count
+      const totalCount = cart.reduce((s,i) => s + i.qty, 0);
+      cartCountEl.textContent = totalCount;
+
+      // update items list
+      cartItemsContainer.innerHTML = '';
+      if (cart.length === 0){
+        cartEmpty.style.display = 'block';
+      } else {
+        cartEmpty.style.display = 'none';
+        cart.forEach((it, idx) => {
+          const el = document.createElement('div');
+          el.className = 'cart-item';
+          el.innerHTML = `
+            <img src="${it.img || 'https://via.placeholder.com/56'}" alt="${escapeHtml(it.title)}" onerror="this.src='https://via.placeholder.com/56'">
+            <div class="meta">
+              <div style="font-weight:700">${escapeHtml(it.title)}</div>
+              <div style="color:var(--muted)">${it.qty} × $${it.price}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <button data-idx="${idx}" class="btn btn-outline remove-item" style="padding:6px 8px">Remove</button>
+            </div>
+          `;
+          cartItemsContainer.appendChild(el);
+        });
+      }
+
+      const total = cart.reduce((s,i) => s + (i.price * i.qty), 0);
+      cartTotalEl.textContent = '$' + total.toFixed(2);
+    }
+
+    // Remove item (delegate)
+    cartItemsContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-item')){
+        const idx = Number(e.target.dataset.idx);
+        cart.splice(idx,1);
+        updateCartUI();
+      }
+    });
+
+    // open/close cart drawer
+    cartBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showCartDrawer();
+    });
+    function showCartDrawer(){
+      cartDrawer.style.display = cartDrawer.style.display === 'flex' ? 'none' : 'flex';
+      cartDrawer.setAttribute('aria-hidden', cartDrawer.style.display === 'none');
+    }
+    // click outside to close drawer
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.cart-drawer') && !e.target.closest('.cart-btn')) {
+        cartDrawer.style.display = 'none';
+      }
+    });
+
+    // checkout stub
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      if (cart.length === 0){ alert('Your cart is empty.'); return; }
+      alert('Checkout simulated — implement real checkout as needed.');
+    });
+
+    // initial update
+    updateCartUI();
+
+    // small helper to escape html inside strings used in innerHTML
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]});
+    }
+
+    // Accessibility: trap focus inside modal while open (basic)
+    document.addEventListener('focusin', (e) => {
+      if (modal.style.display === 'flex' && !modal.contains(e.target)) {
+        // bring focus to close button
+        document.getElementById('close-modal').focus();
+      }
+    });
+
+  </script>
+</body>
+</html>
